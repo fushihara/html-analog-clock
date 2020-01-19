@@ -1,0 +1,558 @@
+<script>
+  classInputTime = function (target) {
+    var objectParent, objectSecondNeedle, objectMinuteNeedle, objectHourNeedle;
+    var objectParent = document.getElementById("inputTime");
+    var objectHourNeedle = objectParent.querySelector(".hour");
+    var objectMinuteNeedle = objectParent.querySelector(".minute");
+    var objectSecondNeedle = objectParent.querySelector(".second");
+    var objectRadiusHour = objectParent.querySelector(".radiusHour");
+    var objectRadiusSecond = objectParent.querySelector(".radiusSec");
+    var objectRadiusMinute = objectParent.querySelector(".radiusMinute");
+    var objectDigitalTimeYear = objectParent.querySelector(".timeDigitalYear");
+    var objectDigitalTimeHour = objectParent.querySelector(".timeDigitalHour");
+    var objectDigitalTimeZone = objectParent.querySelector(".timeDigitalZone");
+    var objectTimeBorderRadius = objectParent.querySelector(".timeBorderRadius");
+    var objectTimeBorderSize = objectParent.querySelector(".timeBorderSize");
+    var nowMouseDown = false;
+    var init = function () {
+    };
+    //指定したdateオブジェクトの時刻を表示する
+    var setTime = function (dateObj) {
+      var hour = (dateObj.getHours() + dateObj.getMinutes() / 60 + dateObj.getSeconds() / 3600) % 12 / 12;
+      var minute = (dateObj.getMinutes() + dateObj.getSeconds() / 60) / 60;
+      var second = (dateObj.getSeconds() + dateObj.getMilliseconds() / 1000) / 60;
+      objectSecondNeedle.style.setProperty("transform", "rotate(" + second * 360 + "deg)");
+      objectMinuteNeedle.style.setProperty("transform", "rotate(" + minute * 360 + "deg)");
+      objectHourNeedle.style.setProperty("transform", "rotate(" + hour * 360 + "deg)");
+      objectDigitalTimeYear.innerText = timeObjectToStrYear(dateObj);
+      objectDigitalTimeHour.innerText = timeObjectToStrHour(dateObj);
+      objectDigitalTimeZone.innerText = timeObjectToStrZone(dateObj);
+      //		timeBorderSet(Math.floor( Math.random()*4)+1,Math.floor(Math.random()*3)+1)
+    };
+    //Dateオブジェクトから時刻の文字列を返す
+    var timeObjectToStrHour = function (obj) {
+      var retStr = "";
+      retStr += 12 < obj.getHours() ? "PM " + (obj.getHours() - 12) : "AM " + obj.getHours();
+      retStr += ":"
+      retStr += ("0" + obj.getMinutes()).substr(-2);
+      retStr += ":"
+      retStr += ("0" + obj.getSeconds()).substr(-2);
+      return retStr;
+    };
+    //Dateオブジェクトから年月日の文字列を返す
+    var timeObjectToStrYear = function (obj) {
+      var retStr = "";
+      //		retStr+=obj.getFullYear();
+      //		retStr+="年"
+      retStr += ("0" + (obj.getMonth() + 1)).substr(-2);
+      retStr += "月"
+      retStr += ("0" + obj.getDate()).substr(-2);
+      retStr += "日"
+      return retStr;
+    }
+    //dateオブジェクトからタイムゾーンのオフセットを返す
+    var timeObjectToStrZone = function (obj) {
+      var retStr = "";
+      var offset = obj.getTimezoneOffset() / 60;
+      if (offset == "-9") {
+        retStr = "-9 JST";
+      }
+      return retStr;
+    }
+    //時刻枠を表示する、しない
+    var timeBorderSet = function (deg, size) {
+      //deg 1=上 2=右 3=下 4=左
+      //size 1=時 2=分 3=秒
+      if (false) {
+      } else if (deg == null) {//リセット
+      } else if (deg == 1) {//上
+        objectTimeBorderRadius.style.setProperty("transform", "rotate(-135deg)");
+      } else if (deg == 2) {//右
+        objectTimeBorderRadius.style.setProperty("transform", "rotate(-45deg)");
+      } else if (deg == 3) {//下
+        objectTimeBorderRadius.style.setProperty("transform", "rotate(45deg)");
+      } else if (deg == 4) {//左
+        objectTimeBorderRadius.style.setProperty("transform", "rotate(135deg)");
+      }
+      if (false) {
+        objectTimeBorderSize.style.setProperty("width", "0px");
+        objectTimeBorderSize.style.setProperty("height", "0px");
+      } else if (size == null) {//リセット
+        objectTimeBorderSize.style.setProperty("width", "0px");
+        objectTimeBorderSize.style.setProperty("height", "0px");
+      } else if (size == 1) {//時
+        objectTimeBorderSize.style.setProperty("width", "60px");
+        objectTimeBorderSize.style.setProperty("height", "60px");
+      } else if (size == 2) {//分
+        objectTimeBorderSize.style.setProperty("width", "85px");
+        objectTimeBorderSize.style.setProperty("height", "85px");
+      } else if (size == 3) {//秒
+        objectTimeBorderSize.style.setProperty("width", "100px");
+        objectTimeBorderSize.style.setProperty("height", "100px");
+      }
+    }
+    //マウスオーバーして枠を表示する
+    var eventMouseMove = function (x, y) {
+      if (nowMouseDown) {
+        return;
+      }
+      var angle = Math.atan2(x, y) * 180 / Math.PI;
+      var len = Math.sqrt(x * x + y * y);
+      var call1, call2;
+      //角度
+      if (false) {
+        mouseCursorChange(0);
+      } else if (-45 < angle && angle < 45) {
+        call1 = 1;
+        mouseCursorChange(2);
+        //			console.log(x,y,len,"▲",nowMouseDown);
+      } else if (45 < angle && angle < 135) {
+        call1 = 2;
+        mouseCursorChange(1);
+        //			console.log(x,y,len,"▶右",nowMouseDown);
+      } else if (135 < angle || angle < -135) {
+        call1 = 3;
+        mouseCursorChange(2);
+        //			console.log(x,y,len,"▼",nowMouseDown);
+      } else if (-135 < angle && angle < -45) {
+        call1 = 4;
+        mouseCursorChange(1);
+        //			console.log(x,y,len,"◀左",nowMouseDown);
+      }
+      //距離
+      if (false) {
+      } else if (100 < len) {
+        call2 = 0;
+        mouseCursorChange(0);
+      } else if (85 < len) {
+        call2 = 3;
+      } else if (60 < len) {
+        call2 = 2;
+      } else if (10 < len) {
+        call2 = 1;
+      } else {
+        call2 = 0;
+        mouseCursorChange(0);
+      }
+      if (call2 !== 0) {
+        timeBorderSet(call1, call2);
+      } else {
+        timeBorderSet();
+      }
+    };
+    //マウスポインタを切り替え
+    var mouseCursorChange = function (mode) {
+      //
+      if (mode == 0) {
+        objectParent.style.setProperty("cursor", "auto");
+      } else if (mode == 1) {
+        objectParent.style.setProperty("cursor", "n-resize");
+      } else if (mode == 2) {
+        objectParent.style.setProperty("cursor", "e-resize");
+      }
+    };
+    //イベントリスナ追加
+    objectParent.addEventListener("mousemove", function (e) {
+      var x, y;
+      x = e.offsetX - 100;
+      y = e.offsetY - 100; y *= -1;
+      eventMouseMove(x, y);
+    }, true);
+    objectParent.addEventListener("mousedown", function () {
+      nowMouseDown = true;
+    });
+    objectParent.addEventListener("mouseup", function () {
+      nowMouseDown = false;
+    });
+    objectParent.addEventListener("mouseleave", function () {
+    });
+    const initDate = new Date();
+    const onAnimation = () => {
+      const keikaJikan = (new Date().getTime() - initDate.getTime()) * 200;
+      setTime(new Date(initDate.getTime() + keikaJikan))
+      window.requestAnimationFrame(() => {
+        onAnimation();
+      })
+    };
+    onAnimation();
+  };
+  window.addEventListener("DOMContentLoaded", function (event) {
+    inputTime = new classInputTime();
+    window.addEventListener("mouseout", function (e) {
+    });
+    window.addEventListener("mouseover", function (e) {
+    });
+  });
+</script>
+<style>
+  /*時の目盛り*/
+  .hourScale {
+    left: -2;
+    border: solid 2px black;
+    height: 7px;
+    background-color: #555;
+    border-radius: 1px;
+    opacity: 0.3;
+  }
+
+  /*分秒の目盛り*/
+  .minSecScale {
+    border: solid 1px black;
+    left: -1;
+    height: 4px;
+    background-color: #555;
+    border-radius: 1px;
+    opacity: 0.3;
+  }
+</style>
+<div style="height:200px;width:200px;;position:relative;display:nonea;border:1 solid black;" id="inputTime">
+  <div style="position:absolute;height:200px;width:200px;background-color:#CCC;border-radius:100px;" class="radiusSec"></div>
+  <div style="position:absolute;height:170px;width:170px;background-color:#BBB;border-radius:225px;top:15px;left:15px;" class="radiusMinute"></div>
+  <div style="position:absolute;height:120px;width:120px;background-color:#AAA;border-radius:200px;top:40px;left:40px;" class="radiusHour"></div>
+  <!-- 選択中の時刻枠 -->
+  <div style="position:absolute;height:200px;width:200px;border-radius:200px;top:0px;left:0px;transform:rotate(45deg);" class="timeBorderRadius">
+    <div style="position:relative;top:0px;left:0px;">
+      <div style="position:absolute;top:100px;left:100px;border-radius:0 0 1000 0px;width:0px;height:0px;background-color:#888;" class="timeBorderSize"></div>
+    </div>
+  </div>
+  <!-- 時計板の周りに沢山並んでいる目盛り -->
+  <div>
+    <!-- "時"の目盛り -->
+    <div style="display:block;">
+      <div style="position:absolute;height:200px;width:200px;transform:rotate(0deg);top:0;">
+        <div style="position:relative;top:100px;left:100px;">
+          <div style="position:absolute;top:-100px;" class="hourScale"></div>
+        </div>
+      </div>
+      <div style="position:absolute;height:200px;width:200px;transform: rotate(30deg);top:0;">
+        <div style="position:relative;top:100px;left:100px;">
+          <div style="position:absolute;top:-100px;" class="hourScale"></div>
+        </div>
+      </div>
+      <div style="position:absolute;height:200px;width:200px;transform: rotate(60deg);top:0;">
+        <div style="position:relative;top:100px;left:100px;">
+          <div style="position:absolute;top:-100px;" class="hourScale"></div>
+        </div>
+      </div>
+      <div style="position:absolute;height:200px;width:200px;transform: rotate(90deg);top:0;">
+        <div style="position:relative;top:100px;left:100px;">
+          <div style="position:absolute;top:-100px;" class="hourScale"></div>
+        </div>
+      </div>
+      <div style="position:absolute;height:200px;width:200px;transform: rotate(120deg);top:0;">
+        <div style="position:relative;top:100px;left:100px;">
+          <div style="position:absolute;top:-100px;" class="hourScale"></div>
+        </div>
+      </div>
+      <div style="position:absolute;height:200px;width:200px;transform: rotate(150deg);top:0;">
+        <div style="position:relative;top:100px;left:100px;">
+          <div style="position:absolute;top:-100px;" class="hourScale"></div>
+        </div>
+      </div>
+      <div style="position:absolute;height:200px;width:200px;transform: rotate(180deg);top:0;">
+        <div style="position:relative;top:100px;left:100px;">
+          <div style="position:absolute;top:-100px;" class="hourScale"></div>
+        </div>
+      </div>
+      <div style="position:absolute;height:200px;width:200px;transform: rotate(210deg);top:0;">
+        <div style="position:relative;top:100px;left:100px;">
+          <div style="position:absolute;top:-100px;" class="hourScale"></div>
+        </div>
+      </div>
+      <div style="position:absolute;height:200px;width:200px;transform: rotate(240deg);top:0;">
+        <div style="position:relative;top:100px;left:100px;">
+          <div style="position:absolute;top:-100px;" class="hourScale"></div>
+        </div>
+      </div>
+      <div style="position:absolute;height:200px;width:200px;transform: rotate(270deg);top:0;">
+        <div style="position:relative;top:100px;left:100px;">
+          <div style="position:absolute;top:-100px;" class="hourScale"></div>
+        </div>
+      </div>
+      <div style="position:absolute;height:200px;width:200px;transform: rotate(300deg);top:0;">
+        <div style="position:relative;top:100px;left:100px;">
+          <div style="position:absolute;top:-100px;" class="hourScale"></div>
+        </div>
+      </div>
+      <div style="position:absolute;height:200px;width:200px;transform: rotate(330deg);top:0;">
+        <div style="position:relative;top:100px;left:100px;">
+          <div style="position:absolute;top:-100px;" class="hourScale"></div>
+        </div>
+      </div>
+    </div>
+    <!-- "分秒"の目盛り -->
+    <div style="display:block;">
+      <div style="position:absolute;height:200px;width:200px;transform: rotate(6deg);top:0;">
+        <div style="position:relative;top:104px;left:100px;">
+          <div style="position:absolute;top:-100px;" class="minSecScale"></div>
+        </div>
+      </div>
+      <div style="position:absolute;height:200px;width:200px;transform: rotate(12deg);top:0;">
+        <div style="position:relative;top:104px;left:100px;">
+          <div style="position:absolute;top:-100px;" class="minSecScale"></div>
+        </div>
+      </div>
+      <div style="position:absolute;height:200px;width:200px;transform: rotate(18deg);top:0;">
+        <div style="position:relative;top:104px;left:100px;">
+          <div style="position:absolute;top:-100px;" class="minSecScale"></div>
+        </div>
+      </div>
+      <div style="position:absolute;height:200px;width:200px;transform: rotate(24deg);top:0;">
+        <div style="position:relative;top:104px;left:100px;">
+          <div style="position:absolute;top:-100px;" class="minSecScale"></div>
+        </div>
+      </div>
+      <div style="position:absolute;height:200px;width:200px;transform: rotate(36deg);top:0;">
+        <div style="position:relative;top:104px;left:100px;">
+          <div style="position:absolute;top:-100px;" class="minSecScale"></div>
+        </div>
+      </div>
+      <div style="position:absolute;height:200px;width:200px;transform: rotate(42deg);top:0;">
+        <div style="position:relative;top:104px;left:100px;">
+          <div style="position:absolute;top:-100px;" class="minSecScale"></div>
+        </div>
+      </div>
+      <div style="position:absolute;height:200px;width:200px;transform: rotate(48deg);top:0;">
+        <div style="position:relative;top:104px;left:100px;">
+          <div style="position:absolute;top:-100px;" class="minSecScale"></div>
+        </div>
+      </div>
+      <div style="position:absolute;height:200px;width:200px;transform: rotate(54deg);top:0;">
+        <div style="position:relative;top:104px;left:100px;">
+          <div style="position:absolute;top:-100px;" class="minSecScale"></div>
+        </div>
+      </div>
+      <div style="position:absolute;height:200px;width:200px;transform: rotate(66deg);top:0;">
+        <div style="position:relative;top:104px;left:100px;">
+          <div style="position:absolute;top:-100px;" class="minSecScale"></div>
+        </div>
+      </div>
+      <div style="position:absolute;height:200px;width:200px;transform: rotate(72deg);top:0;">
+        <div style="position:relative;top:104px;left:100px;">
+          <div style="position:absolute;top:-100px;" class="minSecScale"></div>
+        </div>
+      </div>
+      <div style="position:absolute;height:200px;width:200px;transform: rotate(78deg);top:0;">
+        <div style="position:relative;top:104px;left:100px;">
+          <div style="position:absolute;top:-100px;" class="minSecScale"></div>
+        </div>
+      </div>
+      <div style="position:absolute;height:200px;width:200px;transform: rotate(84deg);top:0;">
+        <div style="position:relative;top:104px;left:100px;">
+          <div style="position:absolute;top:-100px;" class="minSecScale"></div>
+        </div>
+      </div>
+      <div style="position:absolute;height:200px;width:200px;transform: rotate(96deg);top:0;">
+        <div style="position:relative;top:104px;left:100px;">
+          <div style="position:absolute;top:-100px;" class="minSecScale"></div>
+        </div>
+      </div>
+      <div style="position:absolute;height:200px;width:200px;transform: rotate(102deg);top:0;">
+        <div style="position:relative;top:104px;left:100px;">
+          <div style="position:absolute;top:-100px;" class="minSecScale"></div>
+        </div>
+      </div>
+      <div style="position:absolute;height:200px;width:200px;transform: rotate(108deg);top:0;">
+        <div style="position:relative;top:104px;left:100px;">
+          <div style="position:absolute;top:-100px;" class="minSecScale"></div>
+        </div>
+      </div>
+      <div style="position:absolute;height:200px;width:200px;transform: rotate(114deg);top:0;">
+        <div style="position:relative;top:104px;left:100px;">
+          <div style="position:absolute;top:-100px;" class="minSecScale"></div>
+        </div>
+      </div>
+      <div style="position:absolute;height:200px;width:200px;transform: rotate(126deg);top:0;">
+        <div style="position:relative;top:104px;left:100px;">
+          <div style="position:absolute;top:-100px;" class="minSecScale"></div>
+        </div>
+      </div>
+      <div style="position:absolute;height:200px;width:200px;transform: rotate(132deg);top:0;">
+        <div style="position:relative;top:104px;left:100px;">
+          <div style="position:absolute;top:-100px;" class="minSecScale"></div>
+        </div>
+      </div>
+      <div style="position:absolute;height:200px;width:200px;transform: rotate(138deg);top:0;">
+        <div style="position:relative;top:104px;left:100px;">
+          <div style="position:absolute;top:-100px;" class="minSecScale"></div>
+        </div>
+      </div>
+      <div style="position:absolute;height:200px;width:200px;transform: rotate(144deg);top:0;">
+        <div style="position:relative;top:104px;left:100px;">
+          <div style="position:absolute;top:-100px;" class="minSecScale"></div>
+        </div>
+      </div>
+      <div style="position:absolute;height:200px;width:200px;transform: rotate(156deg);top:0;">
+        <div style="position:relative;top:104px;left:100px;">
+          <div style="position:absolute;top:-100px;" class="minSecScale"></div>
+        </div>
+      </div>
+      <div style="position:absolute;height:200px;width:200px;transform: rotate(162deg);top:0;">
+        <div style="position:relative;top:104px;left:100px;">
+          <div style="position:absolute;top:-100px;" class="minSecScale"></div>
+        </div>
+      </div>
+      <div style="position:absolute;height:200px;width:200px;transform: rotate(168deg);top:0;">
+        <div style="position:relative;top:104px;left:100px;">
+          <div style="position:absolute;top:-100px;" class="minSecScale"></div>
+        </div>
+      </div>
+      <div style="position:absolute;height:200px;width:200px;transform: rotate(174deg);top:0;">
+        <div style="position:relative;top:104px;left:100px;">
+          <div style="position:absolute;top:-100px;" class="minSecScale"></div>
+        </div>
+      </div>
+      <div style="position:absolute;height:200px;width:200px;transform: rotate(186deg);top:0;">
+        <div style="position:relative;top:104px;left:100px;">
+          <div style="position:absolute;top:-100px;" class="minSecScale"></div>
+        </div>
+      </div>
+      <div style="position:absolute;height:200px;width:200px;transform: rotate(192deg);top:0;">
+        <div style="position:relative;top:104px;left:100px;">
+          <div style="position:absolute;top:-100px;" class="minSecScale"></div>
+        </div>
+      </div>
+      <div style="position:absolute;height:200px;width:200px;transform: rotate(198deg);top:0;">
+        <div style="position:relative;top:104px;left:100px;">
+          <div style="position:absolute;top:-100px;" class="minSecScale"></div>
+        </div>
+      </div>
+      <div style="position:absolute;height:200px;width:200px;transform: rotate(204deg);top:0;">
+        <div style="position:relative;top:104px;left:100px;">
+          <div style="position:absolute;top:-100px;" class="minSecScale"></div>
+        </div>
+      </div>
+      <div style="position:absolute;height:200px;width:200px;transform: rotate(216deg);top:0;">
+        <div style="position:relative;top:104px;left:100px;">
+          <div style="position:absolute;top:-100px;" class="minSecScale"></div>
+        </div>
+      </div>
+      <div style="position:absolute;height:200px;width:200px;transform: rotate(222deg);top:0;">
+        <div style="position:relative;top:104px;left:100px;">
+          <div style="position:absolute;top:-100px;" class="minSecScale"></div>
+        </div>
+      </div>
+      <div style="position:absolute;height:200px;width:200px;transform: rotate(228deg);top:0;">
+        <div style="position:relative;top:104px;left:100px;">
+          <div style="position:absolute;top:-100px;" class="minSecScale"></div>
+        </div>
+      </div>
+      <div style="position:absolute;height:200px;width:200px;transform: rotate(234deg);top:0;">
+        <div style="position:relative;top:104px;left:100px;">
+          <div style="position:absolute;top:-100px;" class="minSecScale"></div>
+        </div>
+      </div>
+      <div style="position:absolute;height:200px;width:200px;transform: rotate(246deg);top:0;">
+        <div style="position:relative;top:104px;left:100px;">
+          <div style="position:absolute;top:-100px;" class="minSecScale"></div>
+        </div>
+      </div>
+      <div style="position:absolute;height:200px;width:200px;transform: rotate(252deg);top:0;">
+        <div style="position:relative;top:104px;left:100px;">
+          <div style="position:absolute;top:-100px;" class="minSecScale"></div>
+        </div>
+      </div>
+      <div style="position:absolute;height:200px;width:200px;transform: rotate(258deg);top:0;">
+        <div style="position:relative;top:104px;left:100px;">
+          <div style="position:absolute;top:-100px;" class="minSecScale"></div>
+        </div>
+      </div>
+      <div style="position:absolute;height:200px;width:200px;transform: rotate(264deg);top:0;">
+        <div style="position:relative;top:104px;left:100px;">
+          <div style="position:absolute;top:-100px;" class="minSecScale"></div>
+        </div>
+      </div>
+      <div style="position:absolute;height:200px;width:200px;transform: rotate(276deg);top:0;">
+        <div style="position:relative;top:104px;left:100px;">
+          <div style="position:absolute;top:-100px;" class="minSecScale"></div>
+        </div>
+      </div>
+      <div style="position:absolute;height:200px;width:200px;transform: rotate(282deg);top:0;">
+        <div style="position:relative;top:104px;left:100px;">
+          <div style="position:absolute;top:-100px;" class="minSecScale"></div>
+        </div>
+      </div>
+      <div style="position:absolute;height:200px;width:200px;transform: rotate(288deg);top:0;">
+        <div style="position:relative;top:104px;left:100px;">
+          <div style="position:absolute;top:-100px;" class="minSecScale"></div>
+        </div>
+      </div>
+      <div style="position:absolute;height:200px;width:200px;transform: rotate(294deg);top:0;">
+        <div style="position:relative;top:104px;left:100px;">
+          <div style="position:absolute;top:-100px;" class="minSecScale"></div>
+        </div>
+      </div>
+      <div style="position:absolute;height:200px;width:200px;transform: rotate(306deg);top:0;">
+        <div style="position:relative;top:104px;left:100px;">
+          <div style="position:absolute;top:-100px;" class="minSecScale"></div>
+        </div>
+      </div>
+      <div style="position:absolute;height:200px;width:200px;transform: rotate(312deg);top:0;">
+        <div style="position:relative;top:104px;left:100px;">
+          <div style="position:absolute;top:-100px;" class="minSecScale"></div>
+        </div>
+      </div>
+      <div style="position:absolute;height:200px;width:200px;transform: rotate(318deg);top:0;">
+        <div style="position:relative;top:104px;left:100px;">
+          <div style="position:absolute;top:-100px;" class="minSecScale"></div>
+        </div>
+      </div>
+      <div style="position:absolute;height:200px;width:200px;transform: rotate(324deg);top:0;">
+        <div style="position:relative;top:104px;left:100px;">
+          <div style="position:absolute;top:-100px;" class="minSecScale"></div>
+        </div>
+      </div>
+      <div style="position:absolute;height:200px;width:200px;transform: rotate(336deg);top:0;">
+        <div style="position:relative;top:104px;left:100px;">
+          <div style="position:absolute;top:-100px;" class="minSecScale"></div>
+        </div>
+      </div>
+      <div style="position:absolute;height:200px;width:200px;transform: rotate(342deg);top:0;">
+        <div style="position:relative;top:104px;left:100px;">
+          <div style="position:absolute;top:-100px;" class="minSecScale"></div>
+        </div>
+      </div>
+      <div style="position:absolute;height:200px;width:200px;transform: rotate(348deg);top:0;">
+        <div style="position:relative;top:104px;left:100px;">
+          <div style="position:absolute;top:-100px;" class="minSecScale"></div>
+        </div>
+      </div>
+      <div style="position:absolute;height:200px;width:200px;transform: rotate(354deg);top:0;">
+        <div style="position:relative;top:104px;left:100px;">
+          <div style="position:absolute;top:-100px;" class="minSecScale"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- 時分秒の針 -->
+  <div>
+    <!-- 時針 -->
+    <div style="position:absolute;height:200px;width:200px;transform:rotate(-60deg);opacity:0.3;" class="hour">
+      <div style="position:relative;top:100px;left:100px;">
+        <div style="position:absolute;left:-10px;top: -60px;border:solid  60px black;border-top:0;border-left:solid 10px transparent;border-right:solid 10px transparent;"></div>
+        <div style="position:absolute;left:-10px;top:0px;border:solid 20px black;border-bottom:0;border-left:solid 10px transparent;border-right:solid 10px transparent;"></div>
+      </div>
+    </div>
+    <!-- 分針 -->
+    <div style="position:absolute;height:200px;width:200px;transform:rotate(54deg);opacity:0.3;" class="minute">
+      <div style="position:relative;top:100px;left:100px;">
+        <div style="position:absolute;left:-10px;top:-100px;border:solid 100px black;border-top:0;border-left:solid 10px transparent;border-right:solid 10px transparent;"></div>
+        <div style="position:absolute;left:-10px;top:0px;border:solid 20px black;border-bottom:0;border-left:solid 10px transparent;border-right:solid 10px transparent;"></div>
+      </div>
+    </div>
+    <!-- 秒針 -->
+    <div style="position:absolute;height:200px;width:200px;transform:rotate(252deg);opacity:0.3;" class="second">
+      <div style="position:relative;top:100px;left:100px;">
+        <div style="position:absolute;left:-5px;top:-100px;border:solid 100px black;border-top:0;border-left:solid 5px transparent;border-right:solid 5px transparent;"></div>
+        <div style="position:absolute;left:-5px;top:0px;border:solid 10px black;border-bottom:0;border-left:solid 5px transparent;border-right:solid 5px transparent;"></div>
+      </div>
+    </div>
+  </div>
+  <!-- デジタル表示の文字列 -->
+  <div>
+    <div style="position:absolute;opacity:0.7;top:115px;width:100%;text-align:center;font-size:18;" class="timeDigitalYear">AM15:41:15</div>
+    <div style="position:absolute;opacity:0.7;top:131px;width:100%;text-align:center;font-size:24;" class="timeDigitalHour">AM15:41:15</div>
+    <div style="position:absolute;opacity:0.7;top:154px;width:100%;text-align:center;font-size:21;" class="timeDigitalZone"></div>
+  </div>
+  <div style="height:200px;width:200px;transform:rotate(0deg);"></div>
+</div>
