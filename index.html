@@ -166,10 +166,8 @@
     });
     objectParent.addEventListener("mouseleave", function () {
     });
-    const initDate = new Date();
     const onAnimation = () => {
-      const keikaJikan = (new Date().getTime() - initDate.getTime()) * 200;
-      setTime(new Date(initDate.getTime() + keikaJikan))
+      setTime(new Date())
       window.requestAnimationFrame(() => {
         onAnimation();
       })
@@ -185,30 +183,47 @@
   });
 </script>
 <style>
+  :root {
+    /* 枠の1～12の数字の色、影の色 */
+    --round-number-font-color: white;
+    --round-number-shadow-color: black;
+    --digital-text-month-day:black;
+    --digital-text-hour-min-sec:black;
+    --digital-text-offset:black;
+    /* 背景色 内側から3つ */
+    --round-bg-color-1:#AAA;
+    --round-bg-color-2:#BBB;
+    --round-bg-color-3:#CCC;
+    /* 枠の目盛りの色 */
+    --round-dot-hour-color:black;
+    --round-dot-minsec-color:black;
+  }
+  body{
+    /* background-color:black; */
+  }
+
   /*時の目盛り*/
   .hourScale {
     left: -2;
-    border: solid 2px black;
+    border: solid 2px var(--round-dot-hour-color);
     height: 7px;
-    background-color: #555;
     border-radius: 1px;
     opacity: 0.3;
   }
 
   /*分秒の目盛り*/
   .minSecScale {
-    border: solid 1px black;
+    border: solid 1px var(--round-dot-minsec-color);
     left: -1;
     height: 4px;
-    background-color: #555;
     border-radius: 1px;
     opacity: 0.3;
   }
 </style>
 <div style="height:200px;width:200px;;position:relative;display:nonea;border:1 solid black;" id="inputTime">
-  <div style="position:absolute;height:200px;width:200px;background-color:#CCC;border-radius:100px;" class="radiusSec"></div>
-  <div style="position:absolute;height:170px;width:170px;background-color:#BBB;border-radius:225px;top:15px;left:15px;" class="radiusMinute"></div>
-  <div style="position:absolute;height:120px;width:120px;background-color:#AAA;border-radius:200px;top:40px;left:40px;" class="radiusHour"></div>
+  <div style="position:absolute;height:200px;width:200px;background-color:var(--round-bg-color-3);border-radius:100px;" class="radiusSec"></div>
+  <div style="position:absolute;height:170px;width:170px;background-color:var(--round-bg-color-2);border-radius:225px;top:15px;left:15px;" class="radiusMinute"></div>
+  <div style="position:absolute;height:120px;width:120px;background-color:var(--round-bg-color-1);border-radius:200px;top:40px;left:40px;" class="radiusHour"></div>
   <!-- 選択中の時刻枠 -->
   <div style="position:absolute;height:200px;width:200px;border-radius:200px;top:0px;left:0px;transform:rotate(45deg);" class="timeBorderRadius">
     <div style="position:relative;top:0px;left:0px;">
@@ -523,6 +538,69 @@
         </div>
       </div>
     </div>
+    <!-- 枠の数字 -->
+    <div style="display:block;">
+      <div style="position:absolute;height:200px;width:200px;transform:rotate(0deg);top:0;">
+        <div style="position:relative;top:100px;left:100px;">
+          <div style="position:absolute;top:-100px;left: -100px;right: 100px;text-align: center;color:var(--round-number-font-color);text-shadow: 0px 0px 2px var(--round-number-shadow-color);">12</div>
+        </div>
+      </div>
+      <div style="position:absolute;height:200px;width:200px;transform:rotate(30deg);top:0;">
+        <div style="position:relative;top:100px;left:100px;">
+          <div style="position:absolute;top:-100px;left: -100px;right: 100px;text-align: center;color:var(--round-number-font-color);text-shadow: 0px 0px 2px var(--round-number-shadow-color);transform:rotate(-30deg);">1</div>
+        </div>
+      </div>
+      <div style="position:absolute;height:200px;width:200px;transform:rotate(60deg);top:0;">
+        <div style="position:relative;top:100px;left:100px;">
+          <div style="position:absolute;top:-100px;left: -100px;right: 100px;text-align: center;color:var(--round-number-font-color);text-shadow: 0px 0px 2px var(--round-number-shadow-color);transform:rotate(-60deg);">2</div>
+        </div>
+      </div>
+      <div style="position:absolute;height:200px;width:200px;transform:rotate(90deg);top:0;">
+        <div style="position:relative;top:100px;left:100px;">
+          <div style="position:absolute;top:-100px;left: -100px;right: 100px;text-align: center;color:var(--round-number-font-color);text-shadow: 0px 0px 2px var(--round-number-shadow-color);transform:rotate(-90deg);">3</div>
+        </div>
+      </div>
+      <div style="position:absolute;height:200px;width:200px;transform:rotate(120deg);top:0;">
+        <div style="position:relative;top:100px;left:100px;">
+          <div style="position:absolute;top:-100px;left: -100px;right: 100px;text-align: center;color:var(--round-number-font-color);text-shadow: 0px 0px 2px var(--round-number-shadow-color);transform:rotate(-120deg);">4</div>
+        </div>
+      </div>
+      <div style="position:absolute;height:200px;width:200px;transform:rotate(150deg);top:0;">
+        <div style="position:relative;top:100px;left:100px;">
+          <div style="position:absolute;top:-100px;left: -100px;right: 100px;text-align: center;color:var(--round-number-font-color);text-shadow: 0px 0px 2px var(--round-number-shadow-color);transform:rotate(-150deg);">5</div>
+        </div>
+      </div>
+      <div style="position:absolute;height:200px;width:200px;transform:rotate(180deg);top:0;">
+        <div style="position:relative;top:100px;left:100px;">
+          <div style="position:absolute;top:-100px;left: -100px;right: 100px;text-align: center;color:var(--round-number-font-color);text-shadow: 0px 0px 2px var(--round-number-shadow-color);transform:rotate(-180deg);">6</div>
+        </div>
+      </div>
+      <div style="position:absolute;height:200px;width:200px;transform:rotate(210deg);top:0;">
+        <div style="position:relative;top:100px;left:100px;">
+          <div style="position:absolute;top:-100px;left: -100px;right: 100px;text-align: center;color:var(--round-number-font-color);text-shadow: 0px 0px 2px var(--round-number-shadow-color);transform:rotate(-210deg);">7</div>
+        </div>
+      </div>
+      <div style="position:absolute;height:200px;width:200px;transform:rotate(240deg);top:0;">
+        <div style="position:relative;top:100px;left:100px;">
+          <div style="position:absolute;top:-100px;left: -100px;right: 100px;text-align: center;color:var(--round-number-font-color);text-shadow: 0px 0px 2px var(--round-number-shadow-color);transform:rotate(-240deg);">8</div>
+        </div>
+      </div>
+      <div style="position:absolute;height:200px;width:200px;transform:rotate(270deg);top:0;">
+        <div style="position:relative;top:100px;left:100px;">
+          <div style="position:absolute;top:-100px;left: -100px;right: 100px;text-align: center;color:var(--round-number-font-color);text-shadow: 0px 0px 2px var(--round-number-shadow-color);transform:rotate(-270deg);">9</div>
+        </div>
+      </div>
+      <div style="position:absolute;height:200px;width:200px;transform:rotate(300deg);top:0;">
+        <div style="position:relative;top:100px;left:100px;">
+          <div style="position:absolute;top:-100px;left: -100px;right: 100px;text-align: center;color:var(--round-number-font-color);text-shadow: 0px 0px 2px var(--round-number-shadow-color);transform:rotate(-300deg);">10</div>
+        </div>
+      </div>
+      <div style="position:absolute;height:200px;width:200px;transform:rotate(330deg);top:0;">
+        <div style="position:relative;top:100px;left:100px;">
+          <div style="position:absolute;top:-100px;left: -100px;right: 100px;text-align: center;color:var(--round-number-font-color);text-shadow: 0px 0px 2px var(--round-number-shadow-color);transform:rotate(-330deg);">11</div>
+        </div>
+      </div>
+    </div>
   </div>
   <!-- 時分秒の針 -->
   <div>
@@ -550,9 +628,9 @@
   </div>
   <!-- デジタル表示の文字列 -->
   <div>
-    <div style="position:absolute;opacity:0.7;top:115px;width:100%;text-align:center;font-size:18;" class="timeDigitalYear">AM15:41:15</div>
-    <div style="position:absolute;opacity:0.7;top:131px;width:100%;text-align:center;font-size:24;" class="timeDigitalHour">AM15:41:15</div>
-    <div style="position:absolute;opacity:0.7;top:154px;width:100%;text-align:center;font-size:21;" class="timeDigitalZone"></div>
+    <div style="position:absolute;opacity:0.7;top:115px;width:100%;text-align:center;font-size:18;color:var(--digital-text-month-day)" class="timeDigitalYear"></div>
+    <div style="position:absolute;opacity:0.7;top:131px;width:100%;text-align:center;font-size:21;color:var(--digital-text-hour-min-sec)" class="timeDigitalHour"></div>
+    <div style="position:absolute;opacity:0.7;top:154px;width:100%;text-align:center;font-size:15;color:var(--digital-text-offset)" class="timeDigitalZone"></div>
   </div>
   <div style="height:200px;width:200px;transform:rotate(0deg);"></div>
 </div>
